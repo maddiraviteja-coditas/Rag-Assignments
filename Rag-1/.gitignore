@@ -1,0 +1,9 @@
+.venv
+.env
+.vscode
+__pycache__
+embeddings.csv
+app
+Attention.pdf
+git_learning.pdf
+git.txt
