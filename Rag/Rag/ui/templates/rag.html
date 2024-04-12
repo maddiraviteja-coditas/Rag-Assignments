@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        select, input[type="file"], input[type="text"], textarea {
+            margin-bottom: 15px;
+        }
+        #file_upload, #url_upload, #text_upload, #youtube_upload, #embeddings_upload {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Data</h1>
+    <form action="/rag" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div id="upload_method">
+            <label for="upload_method">Choose Upload Method:</label>
+            <select id="upload_method_select" name="upload_method">
+                <option value="file">Upload File</option>
+                <option value="url">URL</option>
+                <option value="text">Text</option>
+                <option value="youtube">YouTube URL</option>
+                <option value="embeddings">Upload Embeddings</option>
+            </select>
+        </div>
+        <div id="file_upload">
+            <label for="file">Upload File:</label>
+            <input type="file" id="file" name="file">
+        </div>
+        <div id="url_upload">
+            <label for="url">Enter URL:</label>
+            <input type="text" id="url" name="url">
+        </div>
+        <div id="text_upload">
+            <label for="text">Enter Text:</label>
+            <textarea id="text" name="text"></textarea>
+        </div>
+        <div id="youtube_upload" style="display:none;">
+            <label for="youtube_url">Enter YouTube URL:</label>
+            <input type="text" id="youtube_url" name="youtube_url">
+        </div>
+        <div id="embeddings_upload" style="display:none;">
+            <label for="embeddings">Upload Embeddings:</label>
+            <input type="file" id="embeddings" name="embeddings">
+        </div>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        function handleUploadMethodChange(method) {
+            var fileUpload = document.getElementById('file_upload');
+            var urlUpload = document.getElementById('url_upload');
+            var textUpload = document.getElementById('text_upload');
+            var youtubeUpload = document.getElementById('youtube_upload');
+            var embeddingsUpload = document.getElementById('embeddings_upload');
+
+            if (method === 'file') {
+                fileUpload.style.display = 'block';
+                urlUpload.style.display = 'none';
+                textUpload.style.display = 'none';
+                youtubeUpload.style.display = 'none';
+                embeddingsUpload.style.display = 'none';
+            } else if (method === 'url') {
+                fileUpload.style.display = 'none';
+                urlUpload.style.display = 'block';
+                textUpload.style.display = 'none';
+                youtubeUpload.style.display = 'none';
+                embeddingsUpload.style.display = 'none';
+            } else if (method === 'text') {
+                fileUpload.style.display = 'none';
+                urlUpload.style.display = 'none';
+                textUpload.style.display = 'block';
+                youtubeUpload.style.display = 'none';
+                embeddingsUpload.style.display = 'none';
+            } else if (method === 'youtube') {
+                fileUpload.style.display = 'none';
+                urlUpload.style.display = 'none';
+                textUpload.style.display = 'none';
+                youtubeUpload.style.display = 'block';
+                embeddingsUpload.style.display = 'none';
+            } else if (method === 'embeddings') {
+                fileUpload.style.display = 'none';
+                urlUpload.style.display = 'none';
+                textUpload.style.display = 'none';
+                youtubeUpload.style.display = 'none';
+                embeddingsUpload.style.display = 'block';
+            }
+        }
+
+        document.getElementById('upload_method_select').addEventListener('change', function() {
+            handleUploadMethodChange(this.value);
+        });
+    </script>
+</body>
+</html>

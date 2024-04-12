@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot</title>
+</head>
+<body>
+
+
+    <p>{{data}}</p>
+    <form action="/rag/chat" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="previous_data" value="{{ conversation_history|join:'|' }}">
+        <label for="query"></label>
+        <input type="text" name="query" id="query" placeholder="Enter your query">
+        <button type="submit">Submit</button>
+    </form>
+<a href="/"><button>Home</button></a>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var previousData = document.querySelector('input[name="previous_data"]').value;
+            var chatContainer = document.getElementById('chat-container');
+            var messages = previousData.split('|');
+
+            messages.forEach(function(message) {
+                var p = document.createElement('p');
+                p.textContent = message;
+                chatContainer.appendChild(p);
+            });
+        });
+    </script>
+</body>
+</html>
