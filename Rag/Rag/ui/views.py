@@ -84,12 +84,13 @@ def rag(request):
             if upload_method == "embeddings":
                 EMBEDDINGS = None
                 path = f"ui/uploaded_files/embeddings/{knolwdge_source}"
-                print(path)
+                # print(path)
                 stored_embeddings = embedder.get_stored_embeddings(path=path)
-                print(type(stored_embeddings[0]))
+                # print(type(stored_embeddings[0]))
                 EMBEDDINGS = (stored_embeddings[0])
                 print("loaded_embeddings")
                 CHUNKS = (stored_embeddings[1])
+                print(len(CHUNKS))
                 print("loaded_chunks")
 
             elif upload_method == "file":
@@ -106,9 +107,12 @@ def rag(request):
                 EMBEDDINGS = None
                 CHUNKS = None
                 splitter = SplitData()
-                CHUNKS = splitter.chunk_data(knolwdge,chunk_size=1250, overlap=300)
+                chunk_size = req.get("chunk_size")
+                overlap = req.get("overlap")
+                CHUNKS = splitter.chunk_data(knolwdge,chunk_size=chunk_size, overlap=overlap)
+                print(len(CHUNKS))
                 EMBEDDINGS = embedder.create_embedding(text=CHUNKS)
-                # embedder.save_embedding(knolwdge_embeddings=EMBEDDINGS, knolwdge_text=CHUNKS)
+                embedder.save_embedding(knolwdge_embeddings=EMBEDDINGS, knolwdge_text=CHUNKS)
             # print("knolwdge length: ",len(knolwdge))
             # print("chunks length: ",len(CHUNKS))
             # print(knolwdge)

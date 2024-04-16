@@ -5,6 +5,7 @@ import os
 import openai
 import requests
 import re
+import asyncio
 from ast import literal_eval
 from youtube_transcript_api import YouTubeTranscriptApi
 from sklearn.metrics.pairwise import cosine_similarity
@@ -95,7 +96,8 @@ class SplitData:
         chunks = []
         for iteration in range(0, len(text) - chunk_size + 1, chunk_size - overlap):
             chunks.append(text[iteration:iteration+chunk_size])
-        print("chunks : " ,chunks)
+        # print("chunks : " ,chunks)
+        print(len(chunks))
         return chunks
     
 class Embedding:
@@ -120,8 +122,9 @@ class Embedding:
     def get_stored_embeddings(self, path: str):
         df = pd.read_csv(path)
         str_embeddings = list(df["embeddings"])
-        knolwdge_text = df["knolwdge_text"]
-        knolwdge_text = list(knolwdge_text)
+        
+        knolwdge_text = list(df["knolwdge_text"])
+        
         list_embeddings = []
         for embedding in str_embeddings:
             list_embeddings.append(literal_eval(embedding))
@@ -149,7 +152,6 @@ class Embedding:
             print("please give the data in list or str format only.")
 
 
-
 class PromptTemplate:
     def __init__(self):
         pass
@@ -168,10 +170,12 @@ class PromptTemplate:
 class SimilaritySearch:
     def __init__(self):
         pass
-    def get_max_index(self,array):
+    def get_max_index(self,array, max_values):
         indexs = []
-        for value in array:
+        print(array)
+        for value in max_values:
             print(np.where(array == value)[0][0])
+            print(value)
             indexs.append(np.where(array == value)[0][0])
         return indexs
     
@@ -182,9 +186,9 @@ class SimilaritySearch:
         print("query Array dim: ",query_vector.ndim)
         cos_similarities = cosine_similarity([query_vector], dataset)
         flat_cos_similarities = cos_similarities.flatten()
-        print(flat_cos_similarities)
-        max_values = flat_cos_similarities.argsort()[-n:]
-        index = self.get_max_index(max_values)
+        sorted_values = sorted(flat_cos_similarities)
+        print(sorted_values)
+        index = self.get_max_index(flat_cos_similarities, sorted_values[-n:])
         print(index)
         return index
 
@@ -202,7 +206,7 @@ class QA:
                     {"role":"system","content" : system_prompt},
                     {"role":"user", "content" : user_prompt}
             ],
-            temperature = 1.25
+            temperature = 1
         )
         return response
     
