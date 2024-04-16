@@ -8,6 +8,7 @@ from utils import (
     QA
     )
 
+
 knolwdge_source = input("""Enter the knolwdge source address : """)
 
 load_knolwdge = LoadData(knolwdge_source)
@@ -19,9 +20,17 @@ splitter = SplitData()
 chunks = splitter.chunk_data(chunk_size=800, overlap= 200, text= text)
 
 embedding = Embedding()
-knolwdge_embedding = embedding.create_embedding(text=chunks)
-# knolwdge = pd.read_csv("./embeddings.csv")
-# knolwdge_embedding = list(knolwdge["embeddings"])
+use_existing_embeddings = input("Do you have any existing existing vector embeddings(yes/no): ")
+
+if use_existing_embeddings.lower() in ["yes", "y"]:
+    path  = input("Enter the file path: ")
+    knolwdge_embedding = embedding.get_stored_embeddings(path=path)
+else:
+    knolwdge_embedding = embedding.create_embedding(text = chunks)
+
+
+print("Knolwdge embeddings: \n", knolwdge_embedding)
+
 
 base_user_prompt = """
 Question : {question}

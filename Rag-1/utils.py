@@ -5,6 +5,7 @@ import os
 import openai
 import requests
 import re
+from ast import literal_eval
 from youtube_transcript_api import YouTubeTranscriptApi
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
@@ -100,6 +101,27 @@ class Embedding:
         os.environ["OPENAI_API_KEY"] = str(self.api_key)
         load_dotenv()
 
+    def save_embedding(self, knolwdge_embeddings: list):
+        embeddings =[] 
+        for embedding in knolwdge_embeddings:
+            embeddings.append(str(embedding))
+        print(embeddings)
+        try:
+            print(embeddings)
+            data_frame = pd.DataFrame(embeddings)
+            data_frame.to_csv("embeddings/embeddings.csv",index = False)
+        except Exception as e:
+            print("There is an error while loading the file...", e)
+        return True
+
+    def get_stored_embeddings(self, path: str):
+        print(path)
+        df = pd.read_csv(path)
+        embeddings = []
+        for row in range(len(df)):
+            embeddings.append(literal_eval(df.loc[row][0]))
+        return embeddings
+
     def create_embedding(self, text):
         embedding = openai.OpenAI().embeddings
         embeddings = []
@@ -107,10 +129,11 @@ class Embedding:
             for chunk in text:
                 chunk_embedding = embedding.create(input=chunk, model = self.model)
                 embeddings.append(chunk_embedding.data[0].embedding)
-            # df = pd.DataFrame(embeddings)
-            # df.to_csv("embeddings.csv")
+            
+            self.save_embedding(embeddings)
             print("saved embeddings")
             return embeddings
+        
         elif type(text) == str:
             chunk_embedding = embedding.create(input = text,  model = self.model)
             input_embedding = chunk_embedding.data[0].embedding
