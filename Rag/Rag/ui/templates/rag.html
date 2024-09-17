@@ -1,0 +1,131 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        select, input[type="file"], input[type="text"], textarea {
+            margin-bottom: 15px;
+        }
+        .chunk-size, .overlap {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Data</h1>
+    <form action="/rag" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div id="upload_method">
+            <label for="upload_method">Choose Upload Method:</label>
+            <select id="upload_method_select" name="upload_method">
+                <option value="file">Upload File</option>
+                <option value="url">URL</option>
+                <option value="text">Text</option>
+                <option value="youtube">YouTube URL</option>
+                <option value="embeddings">Upload Embeddings</option>
+            </select>
+        </div>
+        <div id="file_upload">
+            <label for="file">Upload File:</label>
+            <input type="file" id="file" name="file">
+            <div class="chunk-size">
+                <label for="chunk_size">Chunk Size:</label>
+                <input type="number" id="chunk_size" name="chunk_size">
+            </div>
+            <div class="overlap">
+                <label for="overlap">Overlap:</label>
+                <input type="number" id="overlap" name="overlap">
+            </div>
+        </div>
+        <div id="url_upload">
+            <label for="url">Enter URL:</label>
+            <input type="text" id="url" name="url">
+            <div class="chunk-size">
+                <label for="chunk_size">Chunk Size:</label>
+                <input type="number" id="chunk_size" name="chunk_size">
+            </div>
+            <div class="overlap">
+                <label for="overlap">Overlap:</label>
+                <input type="number" id="overlap" name="overlap">
+            </div>
+        </div>
+        <div id="text_upload">
+            <label for="text">Enter Text:</label>
+            <textarea id="text" name="text"></textarea>
+            <div class="chunk-size">
+                <label for="chunk_size">Chunk Size:</label>
+                <input type="number" id="chunk_size" name="chunk_size">
+            </div>
+            <div class="overlap">
+                <label for="overlap">Overlap:</label>
+                <input type="number" id="overlap" name="overlap">
+            </div>
+        </div>
+        <div id="youtube_upload" style="display:none;">
+            <label for="youtube_url">Enter YouTube URL:</label>
+            <input type="text" id="youtube_url" name="youtube_url">
+            <div class="chunk-size">
+                <label for="chunk_size">Chunk Size:</label>
+                <input type="number" id="chunk_size" name="chunk_size">
+            </div>
+            <div class="overlap">
+                <label for="overlap">Overlap:</label>
+                <input type="number" id="overlap" name="overlap">
+            </div>
+        </div>
+        <div id="embeddings_upload" style="display:none;">
+            <label for="embeddings">Upload Embeddings:</label>
+            <input type="file" id="embeddings" name="embeddings">
+        </div>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        function handleUploadMethodChange(method) {
+            var fileUpload = document.getElementById('file_upload');
+            var urlUpload = document.getElementById('url_upload');
+            var textUpload = document.getElementById('text_upload');
+            var youtubeUpload = document.getElementById('youtube_upload');
+            var embeddingsUpload = document.getElementById('embeddings_upload');
+            
+            var allUploads = [fileUpload, urlUpload, textUpload, youtubeUpload, embeddingsUpload];
+
+            allUploads.forEach(function(upload) {
+                upload.style.display = 'none';
+            });
+
+            var selectedUpload = document.getElementById(method + '_upload');
+            if (selectedUpload) {
+                selectedUpload.style.display = 'block';
+            }
+
+            var chunkSize = selectedUpload.querySelector('.chunk-size');
+            var overlap = selectedUpload.querySelector('.overlap');
+
+            if (chunkSize && overlap) {
+                chunkSize.style.display = 'block';
+                overlap.style.display = 'block';
+            }
+        }
+
+        document.getElementById('upload_method_select').addEventListener('change', function() {
+            handleUploadMethodChange(this.value);
+        });
+    </script>
+</body>
+</html>

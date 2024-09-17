@@ -1,0 +1,12 @@
+Rag/.ipynb_checkpoints
+Rag/assets/admin
+Rag/embeddings/*
+Rag/Rag/__pycache__
+Rag/ui/__pycache__
+Rag/ui/embeddings/*
+Rag/ui/uploaded_files/embeddings/*
+Rag/ui/uploaded_files/files/*
+db.sqlite3
+Rag/ui/tests.py
+.venv
+.env
